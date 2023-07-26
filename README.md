@@ -7,18 +7,33 @@
 POST：
 
 package main
+
 import (
- 	"fmt"
- )
- 
-func main() {
-	fmt.Println("Hello, World!")
-	sampleSlice := []int{1, 2, 3}
-	if len(sampleSlice) > 2 {
-		fmt.Println("More than two elements")
+	"fmt"
+)
+
+type Person struct {
+	Name string
+	Age  int
+}
+
+func NewPerson(name string, age int) *Person {
+	return &Person{
+		Name: name,
+		Age:  age,
 	}
-	for i := 0; i < len(sampleSlice); i++ {
-		fmt.Println("Element:", sampleSlice[i])
+}
+
+func (p *Person) SayHello() {
+	fmt.Println("Hello, my name is", p.Name, "and I'm", p.Age, "years old")
+}
+
+func main() {
+	person := NewPerson("John", 30)
+	if person != nil {
+		person.SayHello()
+	} else {
+		fmt.Println("Error creating person")
 	}
 }
 ```
@@ -26,20 +41,33 @@ func main() {
 ANSWER：
 
 package main
+
 パッケージをインポート
 "fmt"
 )
 
-func main() {
-「Hello, World!」を出力
-sampleSliceという名前の整数型スライスを定義し、値は1, 2, 3です
-もしlen(sampleSlice) > 2 {の場合
-「More than two elements」を出力
+Personという名前の構造体を定義
+Name string
+Age  int
 }
-i := 0; i < len(sampleSlice); i++ {の間、以下の処理を繰り返す
-「Element:", sampleSlice[i]」を出力
+
+NewPersonという名前の関数を定義し、パラメータはname string, age intです
+return &Person{
+Name: name,
+Age:  age,
 }
 }
 
+(p *Person) SayHelloという名前の関数を定義し、パラメータはです
+「Hello, my name is", p.Name, "and I'm", p.Age, "years old」を出力
+}
 
+mainという名前の関数を定義し、パラメータはです
+personという名前の変数を定義し、値はNewPerson("John", 30)です
+もしperson != nil {の場合
+person.SayHello()
+} else {
+「Error creating person」を出力
+}
+}
 ```

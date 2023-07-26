@@ -10,9 +10,11 @@ func translateToJapanese(code string) string {
 	result := ""
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		// 新たに関数定義にも対応
-		r := regexp.MustCompile(`func (.+)\((.*)\)`)
+		// 正規表現を追加
+		rFunc := regexp.MustCompile(`func (.+)\((.*)\)`)
 		rErr := regexp.MustCompile(`if err != nil {`)
+		rStruct := regexp.MustCompile(`type (.+) struct {`)
+		rPointer := regexp.MustCompile(`\*(\w+)`)
 		if strings.HasPrefix(line, "fmt.Println") {
 			contents := strings.TrimPrefix(line, "fmt.Println")
 			contents = strings.TrimSpace(contents)
@@ -41,14 +43,21 @@ func translateToJapanese(code string) string {
 			value := strings.TrimSpace(parts[1])
 			if strings.Contains(value, "[]int") {
 				result += variable + "という名前の整数型スライスを定義し、値は" + strings.Trim(value, "[]int{}") + "です\n"
+			} else if rPointer.MatchString(variable) {
+				variable = strings.Trim(variable, "*")
+				result += variable + "という名前のポインタを定義し、値は" + value + "です\n"
 			} else {
 				result += variable + "という名前の変数を定義し、値は" + value + "です\n"
 			}
-		} else if r.MatchString(line) {
-			matches := r.FindStringSubmatch(line)
+		} else if rFunc.MatchString(line) {
+			matches := rFunc.FindStringSubmatch(line)
 			funcName := matches[1]
 			params := matches[2]
 			result += funcName + "という名前の関数を定義し、パラメータは" + params + "です\n"
+		} else if rStruct.MatchString(line) {
+			matches := rStruct.FindStringSubmatch(line)
+			structName := matches[1]
+			result += structName + "という名前の構造体を定義\n"
 		} else {
 			result += line + "\n"
 		}
